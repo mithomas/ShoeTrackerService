@@ -1,0 +1,162 @@
+openapi: 3.0.1
+info:
+  title: Footloose
+  description: API definition for *Footloose - Track the Shoes*, the tracker for shoes on the road.
+  version: 0.1.0
+  contact:
+    email: dev@mthix.de
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: sightings
+    description: Everything around objects sightings.
+paths:
+  /sightings:
+    get:
+      summary: List all sightings.
+      description: Currently no filtering or pagination is available.
+      operationId: getSightings
+      tags:
+        - sightings
+      responses:
+        '200':
+          description: An unordered list of all posted sightings; possibly empty.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sighting'
+    post:
+      summary: Post a new sighting.
+      operationId: postSighting
+      tags:
+        - sightings
+      requestBody:
+        description: The sighting object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sighting'
+        required: true
+      responses:
+        201:
+          description: The successfully posted sighting.
+          headers:
+            Location:
+              description: Location of the newly created sighting.
+              schema:
+                type: string
+                example: /sightings/42
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sighting'
+  /sightings/{sightingId}:
+    get:
+      summary: Find a sighting by its id.
+      description: Returns a single sighting.
+      operationId: getSightingById
+      tags:
+        - sightings
+      parameters:
+        - name: sightingId
+          in: path
+          description: 'The id of the requested sighting.'
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: An unordered list of all posted sightings; possibly empty.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sighting'
+        400:
+          description: Invalid id supplied.
+          content:
+              application/problem+json:
+                schema:
+                  $ref: '#/components/schemas/Problem'
+        404:
+          description: Sighting not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+components:
+  schemas:
+    Sighting:
+      type: object
+      description: An object sighting.
+      required:
+        - id
+        - longitude
+        - latitude
+        - discoveredAt
+        - discoveredBy
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique sighting identifier.
+          readOnly: true
+        latitude:
+          type: number
+          format: float
+          minimum: -90.0
+          maximum: 90.0
+          description: The north/south position in decimal degrees.
+          example: 51.490992
+        longitude:
+          type: number
+          format: float
+          minimum: -180.0
+          maximum: 180.0
+          description: The east/west in decimal degrees.
+          example: 11.698733
+        seenAt:
+          type: string
+          format: 'date-time'
+          description: Date and time of the sighting.
+          example: '2009-06-13T10:20:42Z'
+        seenBy:
+          type: string
+          description: The person spotting the object.
+        seenObject:
+          description: The actually seen object, decoupled from the sighting event for possible other types; as of now only shoes.
+          oneOf:
+            - $ref: '#/components/schemas/Shoe'
+    Shoe:
+      type: object
+      description: A spotted shoe, decoupled from the sighting event for possible extensions both for shoe information.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique sighting identifier.
+          readOnly: true
+        sighting:
+          type: integer
+          format: int64
+          readOnly: true
+          description: Id of the sighting event.
+    Problem:
+      type: object
+      description: An RFC-7807-compliant problem description. See [Problem Details for HTTP APIs](https://tools.ietf.org/html/rfc7807) and [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/).
+      properties:
+        title:
+          type: string
+          description: Short, human-readable title for the general error type; the title should not change for given types.
+          example: Generic Error
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+          example: Something bad has happened.
+        status:
+          type: number
+          format: int32
+          description: The HTTP status code so all information is in one place. Also to correct for changes in the status code due to the usage of proxy servers.
+          example: 400
