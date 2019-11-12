@@ -1,0 +1,6 @@
+{
+  "apiPackage"    : "de.mthix.footloose.service",
+  "modelPackage"  : "de.mthix.footloose.model",
+  "interfaceOnly" : "true",
+  "java8"         : "false"
+}
