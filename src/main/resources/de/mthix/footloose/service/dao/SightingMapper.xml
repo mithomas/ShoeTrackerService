@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="de.mthix.footloose.service.dao.SightingMapper">
+    <insert id="createSighting" parameterType="Sighting" useGeneratedKeys="true" keyProperty="id">
+        insert into sighting(latitude,longitude,seen_at,seen_by) values(#{latitude}, #{longitude}, #{seenAt}, #{seenBy});
+    </insert>
+
+    <select id="getSighting" resultMap="sightingShoeMap">
+        select * from sighting where id = #{id}
+    </select>
+
+    <select id="getSightings" resultMap="sightingShoeMap">
+        select * from sighting
+    </select>
+
+    <select id="getSightingsCount" resultType="int">
+        select count(*) from sighting
+    </select>
+
+    <resultMap id="sightingShoeMap" type="Sighting" autoMapping="true">
+        <result property="seenAt" column="seen_at" />
+        <result property="seenBy" column="seen_by" />
+
+        <collection property="seenShoes" ofType="Shoe">
+            <result property="id" column="id" />
+            <collection property="sightings" column="id" ofType="Long" />
+        </collection>
+    </resultMap>
+</mapper>

@@ -125,24 +125,31 @@ components:
         seenBy:
           type: string
           description: The person spotting the object.
-        seenObject:
-          description: The actually seen object, decoupled from the sighting event for possible other types; as of now only shoes.
-          oneOf:
-            - $ref: '#/components/schemas/Shoe'
+        seenShoes:
+          description: List of all seen shoes. Array for future extensions, for now limited to one.
+          type: array
+          items:
+            $ref: '#/components/schemas/Shoe'
+          minItems: 1
+          maxItems: 1
     Shoe:
       type: object
-      description: A spotted shoe, decoupled from the sighting event for possible extensions both for shoe information.
+      description: A spotted shoe, decoupled from the sighting event for possible extensions both for shoe information or other objects.
       properties:
         id:
           type: integer
           format: int64
           description: The unique sighting identifier.
           readOnly: true
-        sighting:
-          type: integer
-          format: int64
+        sightings:
+          type: array
+          items:
+            type: integer
+            format: int64
           readOnly: true
-          description: Id of the sighting event.
+          description: Ids of all related sighting events. Array for future extensions, for now limited to one.
+          minItems: 1
+          maxItems: 1
     Problem:
       type: object
       description: An RFC-7807-compliant problem description. See [Problem Details for HTTP APIs](https://tools.ietf.org/html/rfc7807) and [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/).
