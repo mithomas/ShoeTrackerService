@@ -2,6 +2,7 @@ package de.mthix.footloose.service.dao;
 
 import de.mthix.footloose.model.Shoe;
 import de.mthix.footloose.model.Sighting;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,17 +44,6 @@ class SightingMapperContextTest {
     }
 
     @Test
-    public void getSighting() {
-        assertThat(sightingMapper.getSighting(1)).isEqualTo(
-                new Sighting().id(1L)
-                        .latitude(1.1f)
-                        .longitude(-1.1f)
-                        .seenAt(OffsetDateTime.parse("2018-10-11T16:28:03Z"))
-                        .seenBy("Al G. Mein")
-                        .addSeenShoesItem(new Shoe().id(1L).addSightingsItem(1L)));
-    }
-
-    @Test
     public void getSightings() {
         assertThat(sightingMapper.getSightings()).containsExactlyInAnyOrder(
                 new Sighting().id(1L)
@@ -79,5 +69,25 @@ class SightingMapperContextTest {
     @Test
     public void getSightingsCount() {
         assertThat(sightingMapper.getSightingsCount()).isEqualTo(3);
+    }
+
+    @Nested
+    class GetSighting {
+
+        @Test
+        public void existing() {
+            assertThat(sightingMapper.getSighting(1)).isEqualTo(
+                    new Sighting().id(1L)
+                            .latitude(1.1f)
+                            .longitude(-1.1f)
+                            .seenAt(OffsetDateTime.parse("2018-10-11T16:28:03Z"))
+                            .seenBy("Al G. Mein")
+                            .addSeenShoesItem(new Shoe().id(1L).addSightingsItem(1L)));
+        }
+
+        @Test
+        public void notExisting() {
+            assertThat(sightingMapper.getSighting(100)).isNull();
+        }
     }
 }

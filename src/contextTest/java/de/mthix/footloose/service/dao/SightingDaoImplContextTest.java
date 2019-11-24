@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,6 +51,16 @@ class SightingDaoImplContextTest {
             assertThatThrownBy(() -> {
                 dao.createSighting(new Sighting());
             }).isInstanceOf(ConstraintViolationException.class);
+        }
+    }
+
+    @Nested
+    class GetSighting {
+
+        @Test
+        void notFound() {
+            when(sightingMapper.getSighting(42)).thenReturn(null);
+            assertThatThrownBy((() -> dao.getSighting(42))).isInstanceOf(NoSuchElementException.class);
         }
     }
 }

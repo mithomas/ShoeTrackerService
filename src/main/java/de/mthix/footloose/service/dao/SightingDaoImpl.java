@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,11 @@ public class SightingDaoImpl implements SightingDao {
     @Override
     public Sighting getSighting(long id) {
         final Sighting sighting = sightingMapper.getSighting(id);
+
+        if(sighting == null) {
+            throw new NoSuchElementException("No sighting found for id " + id);
+        }
+
         validate(sighting);
         return sighting;
     }
