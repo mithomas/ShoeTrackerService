@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ActiveProfiles("integrationTest")
-class SightingDaoImplIntegrationTest {
+@ActiveProfiles("contextTest")
+class SightingDaoImplContextTest {
 
     @Autowired
     private SightingDao dao;

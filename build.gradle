@@ -70,7 +70,8 @@ sourceSets.main.java.srcDir "${swaggerSources.footlooseModel.code.outputDir}/src
 sourceSets.main.java.srcDir "${swaggerSources.footlooseService.code.outputDir}/src/main/java"
 
 testSets {
-    integrationTest
+    contextTest     // mocked integration tests under Spring's application context
+    integrationTest // full-stack integration tests
 }
 
 tasks.withType(Test) {

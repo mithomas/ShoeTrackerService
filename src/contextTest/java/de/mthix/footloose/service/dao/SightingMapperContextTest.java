@@ -13,9 +13,9 @@ import java.time.OffsetDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ActiveProfiles("integrationTest")
+@ActiveProfiles("contextTest")
 @Transactional
-class SightingMapperIntegrationTest {
+class SightingMapperContextTest {
 
     @Autowired
     private SightingMapper sightingMapper;
