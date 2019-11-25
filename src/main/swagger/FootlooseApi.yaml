@@ -65,8 +65,9 @@ paths:
           description: 'The id of the requested sighting.'
           required: true
           schema:
-            type: number
+            type: integer
             format: int64
+            minimum: 1
       responses:
         '200':
           description: An unordered list of all posted sightings; possibly empty.
