@@ -19,48 +19,48 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("contextTest")
 class SightingDaoImplContextTest {
 
-    @Autowired
-    private SightingDao dao;
+  @Autowired
+  private SightingDao dao;
 
-    @MockBean
-    private SightingMapper sightingMapper;
+  @MockBean
+  private SightingMapper sightingMapper;
 
-    @Nested
-    class PerformValidation {
+  @Nested
+  class PerformValidation {
 
-        @Test
-        void GetSightings() {
-            when(sightingMapper.getSightings()).thenReturn(asList(new Sighting()));
+    @Test
+    void GetSightings() {
+      when(sightingMapper.getSightings()).thenReturn(asList(new Sighting()));
 
-            assertThatThrownBy(() -> {
-                dao.getSightings();
-            }).isInstanceOf(ConstraintViolationException.class);
-        }
-
-        @Test
-        void GetSighting() {
-            when(sightingMapper.getSighting(1L)).thenReturn(new Sighting());
-
-            assertThatThrownBy(() -> {
-                dao.getSighting(1L);
-            }).isInstanceOf(ConstraintViolationException.class);
-        }
-
-        @Test
-        void CreateSighting() {
-            assertThatThrownBy(() -> {
-                dao.createSighting(new Sighting());
-            }).isInstanceOf(ConstraintViolationException.class);
-        }
+      assertThatThrownBy(() -> {
+        dao.getSightings();
+      }).isInstanceOf(ConstraintViolationException.class);
     }
 
-    @Nested
-    class GetSighting {
+    @Test
+    void GetSighting() {
+      when(sightingMapper.getSighting(1L)).thenReturn(new Sighting());
 
-        @Test
-        void notFound() {
-            when(sightingMapper.getSighting(42)).thenReturn(null);
-            assertThatThrownBy((() -> dao.getSighting(42))).isInstanceOf(NoSuchElementException.class);
-        }
+      assertThatThrownBy(() -> {
+        dao.getSighting(1L);
+      }).isInstanceOf(ConstraintViolationException.class);
     }
+
+    @Test
+    void CreateSighting() {
+      assertThatThrownBy(() -> {
+        dao.createSighting(new Sighting());
+      }).isInstanceOf(ConstraintViolationException.class);
+    }
+  }
+
+  @Nested
+  class GetSighting {
+
+    @Test
+    void notFound() {
+      when(sightingMapper.getSighting(42)).thenReturn(null);
+      assertThatThrownBy((() -> dao.getSighting(42))).isInstanceOf(NoSuchElementException.class);
+    }
+  }
 }

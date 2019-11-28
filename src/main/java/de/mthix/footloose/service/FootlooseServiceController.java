@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -17,23 +16,23 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RestController
 public class FootlooseServiceController implements SightingsApi {
 
-    @Autowired
-    private SightingDao dao;
+  @Autowired
+  private SightingDao dao;
 
-    @Override
-    public ResponseEntity<Sighting> getSightingById(@NotNull Long sightingId) {
-        return ResponseEntity.ok(dao.getSighting(sightingId));
-    }
+  @Override
+  public ResponseEntity<Sighting> getSightingById(Long sightingId) {
+    return ResponseEntity.ok(dao.getSighting(sightingId));
+  }
 
-    @Override
-    public ResponseEntity<List<Sighting>> getSightings() {
-        List<Sighting> sightings = dao.getSightings();
-        return ResponseEntity.ok(sightings != null ? sightings : emptyList());
-    }
+  @Override
+  public ResponseEntity<List<Sighting>> getSightings() {
+    List<Sighting> sightings = dao.getSightings();
+    return ResponseEntity.ok(sightings != null ? sightings : emptyList());
+  }
 
-    @Override
-    public ResponseEntity<Sighting> postSighting(@Valid Sighting sighting) {
-        Sighting persisted = dao.createSighting(sighting);
-        return ResponseEntity.created(fromCurrentRequest().path("/{id}").buildAndExpand(persisted.getId()).toUri()).body(persisted);
-    }
+  @Override
+  public ResponseEntity<Sighting> postSighting(@Valid Sighting sighting) {
+    Sighting persisted = dao.createSighting(sighting);
+    return ResponseEntity.created(fromCurrentRequest().path("/{id}").buildAndExpand(persisted.getId()).toUri()).body(persisted);
+  }
 }

@@ -9,11 +9,14 @@ import java.util.List;
 @Validated
 public interface SightingDao {
 
-    Sighting createSighting(@Valid Sighting sighting);
+  Sighting createSighting(@Valid Sighting sighting);
 
-    Sighting getSighting(long id);
+  /**
+   * @throws java.util.NoSuchElementException if the sighting with the given id could  not be found.
+   */
+  Sighting getSighting(long id);
 
-    List<Sighting> getSightings();
+  List<Sighting> getSightings();
 
-    int getSightingsCount();
+  int getSightingsCount();
 }

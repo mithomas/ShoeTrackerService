@@ -27,69 +27,70 @@ import static java.util.Arrays.asList;
  */
 public class SightingDaoImpl implements SightingDao {
 
-    @Autowired
-    private SightingMapper sightingMapper;
-    @Autowired
-    private Validator validator;
+  @Autowired
+  private SightingMapper sightingMapper;
+  @Autowired
+  private Validator      validator;
 
-    @Override
-    public List<Sighting> getSightings() {
-        final List<Sighting> sightings = sightingMapper.getSightings();
-        validate(sightings);
-        return sightings;
+  @Override
+  public List<Sighting> getSightings() {
+    final List<Sighting> sightings = sightingMapper.getSightings();
+    validate(sightings);
+    return sightings;
+  }
+
+  @Override
+  public int getSightingsCount() {
+    return sightingMapper.getSightingsCount();
+  }
+
+  @Override
+  public Sighting getSighting(long id) {
+     final Sighting sighting = sightingMapper.getSighting(id);
+
+    if (sighting == null) {
+      throw new NoSuchElementException("No sighting found for id " + id);
     }
 
-    @Override
-    public int getSightingsCount() {
-        return sightingMapper.getSightingsCount();
+    validate(sighting);
+    return sighting;
+  }
+
+  @Override
+  @Transactional
+  public Sighting createSighting(@Valid Sighting sighting) {
+    sightingMapper.createSighting(sighting);
+
+    sighting.getSeenShoes().get(0).id(sighting.getId()).addSightingsItem(sighting.getId());
+
+    return sighting;
+  }
+
+  /**
+   * Bean-validates elements of the given list and raises a {@link ConstraintViolationException} if this fails.
+   * <p>
+   * Spring's validation capabilities based on AOP do not work for local methods since they use proxy objects, so it is
+   * performed programmatically here.
+   *
+   * @throws ConstraintViolationException if the validation failed.
+   */
+  private <T> void validate(Collection<T> objects) {
+    Set<ConstraintViolation<T>> constraintViolations = objects.stream().map(o -> validator.validate(o)).flatMap(Set::stream).collect(Collectors.toSet());
+
+    if (!constraintViolations.isEmpty()) {
+      throw new IllegalStateException(new ConstraintViolationException(constraintViolations));
     }
+  }
 
-    @Override
-    public Sighting getSighting(long id) {
-        final Sighting sighting = sightingMapper.getSighting(id);
-
-        if(sighting == null) {
-            throw new NoSuchElementException("No sighting found for id " + id);
-        }
-
-        validate(sighting);
-        return sighting;
-    }
-
-    @Override
-    @Transactional
-    public Sighting createSighting(@Valid Sighting sighting) {
-        sightingMapper.createSighting(sighting);
-
-        sighting.getSeenShoes().get(0).id(sighting.getId()).addSightingsItem(sighting.getId());
-
-        return sighting;
-    }
-
-    /**
-     * Bean-validates elements of the given list and raises a {@link ConstraintViolationException} if this fails.
-     * <p>
-     * Spring's validation capabilities based on AOP do not work for local methods since they use proxy objects, so it is
-     * performed programmatically here.
-     *
-     * @throws ConstraintViolationException if the validation failed.
-     */
-    private <T> void validate(Collection<T> objects) {
-        Set<ConstraintViolation<T>> constraintViolations = objects.stream().map(o -> validator.validate(o)).flatMap(Set::stream).collect(Collectors.toSet());
-
-        if (!constraintViolations.isEmpty()) {
-            throw new ConstraintViolationException(constraintViolations);
-        }
-    }
-    /**
-     * Bean-validates all given objects and raises a {@link ConstraintViolationException} if this fails.
-     * <p>
-     * Spring's validation capabilities based on AOP do not work for local methods since they use proxy objects, so it is
-     * performed programmatically here.
-     *
-     * @throws ConstraintViolationException if the validation failed.
-     */
-    private <T> void validate(T... objects) {
-        validate(asList(objects));
-    }
+  /**
+   * Bean-validates all given objects and raises a {@link ConstraintViolationException} if this fails.
+   * <p>
+   * Spring's validation capabilities based on AOP do not work for local methods since they use proxy objects, so it is
+   * performed programmatically here.
+   *
+   * @throws ConstraintViolationException if the validation failed.
+   */
+  private <T> void validate(T... objects) {
+    validate(asList(objects));
+  }
 }

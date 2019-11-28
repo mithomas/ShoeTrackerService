@@ -11,11 +11,13 @@ import java.util.TimeZone;
 @MapperScan("de.mthix.footloose.service.dao")
 public class FootlooseServiceApplication {
 
-	public static void main(String[] args) { SpringApplication.run(FootlooseServiceApplication.class, args); }
+  public static void main(String[] args) {
+    SpringApplication.run(FootlooseServiceApplication.class, args);
+  }
 
-	@PostConstruct
-	public void init(){
-		// force application into UTC timezone to avoid offset errors with dates and database
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	}
+  @PostConstruct
+  public void init() {
+    // force application into UTC timezone to avoid offset errors with dates and database
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+  }
 }

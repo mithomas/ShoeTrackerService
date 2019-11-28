@@ -10,16 +10,16 @@ import java.util.List;
 @Mapper
 interface SightingMapper {
 
-    int createSighting(Sighting sighting);
+  int createSighting(Sighting sighting);
 
-    Sighting getSighting(long id);
+  Sighting getSighting(long id);
 
-    List<Sighting> getSightings();
+  List<Sighting> getSightings();
 
-    int getSightingsCount();
+  int getSightingsCount();
 
-    @Flush
-    List<BatchResult> flush();
+  @Flush
+  List<BatchResult> flush();
 }
 
 
